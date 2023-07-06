@@ -1,6 +1,6 @@
 
 - name: Setup Tomcat8 & Deploy Artifact
-  hosts: appsrvgrp
+  hosts: app01
   become: yes
   vars:
     timestamp: "{{ansible_date_time.date}}_{{ansible_date_time.hour}}_{{ansible_date_time.minute}}"

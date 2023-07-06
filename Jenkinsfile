@@ -87,6 +87,17 @@ pipeline {
                 )
             }
         }
+        stage('create test env') {
+            steps{
+                ansiColor('xterm') {
+                    ansiblePlaybook(
+                        playbook: './ansible/tomcat_setup.yml',
+                        inventory: './ansible/hosts',
+                        credentialsId: 'ansible-ssh-key',
+                        colorized: true)
+                }
+            }
+        }
     }
     post {
         always {
