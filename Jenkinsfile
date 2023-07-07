@@ -18,6 +18,24 @@ pipeline {
     }
 
     stages {
+        stage('setup paramaters') {
+            steps{
+                script {
+                    properties([
+                        parametes([
+                            string(
+                                defaultValue: '', 
+                                name: 'BUILD',
+                            ),
+                            string(
+                                defaultValue: '', 
+                                name: 'TIME',
+                            ),
+                        ])
+                    ])
+                }
+            }
+        }
         
         stage('deploy prod artifact') {
             steps {
