@@ -4,6 +4,11 @@ def COLOR_MAP = [
 ]
 pipeline {
     agent any
+    parameters {
+        string(name: 'TIME', defaultValue: '')
+        string(name: 'BUILD', defaultValue: '')
+
+    }
     tools {
         maven "MAVEN3"
         jdk "OracleJDK8"
@@ -17,25 +22,7 @@ pipeline {
         NEXUS_ARTIFACT = "vproapp"
     }
 
-    stages {
-        stage('setup paramaters') {
-            steps{
-                script {
-                    properties([
-                        parametes([
-                            string(
-                                defaultValue: '', 
-                                name: 'BUILD',
-                            ),
-                            string(
-                                defaultValue: '', 
-                                name: 'TIME',
-                            ),
-                        ])
-                    ])
-                }
-            }
-        }
+    
         
         stage('deploy prod artifact') {
             steps {
