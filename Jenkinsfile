@@ -22,7 +22,8 @@ pipeline {
         NEXUS_ARTIFACT = "vproapp"
     }
 
-    
+    stages {
+        
         
         stage('deploy prod artifact') {
             steps {
