@@ -13,7 +13,7 @@ pipeline {
         reponame = "vprofile-release"
         groupid = "QA"
         artifactid = "vproapp"
-        build = "3"
+        build = "3-"
         time = "23-07-06-19-41-57"
         vprofile_version = "vproapp-3--23-07-06-19-41-57.war"
     }
@@ -26,38 +26,26 @@ pipeline {
         }
         stage('create test env') {
             steps {
-                withEnv([
-                    "USER=${USER}",
-                    "PASS=${PASS}",
-                    "nexusip=${nexusip}",
-                    "reponame=${reponame}",
-                    "groupid=${groupid}",
-                    "artifactid=${artifactid}",
-                    "build=${build}",
-                    "time=${time}",
-                    "vprofile_version=${vprofile_version}"
-                ]) {
-                    ansiblePlaybook([
-                        playbook: './ansible/vpro-app-setup.yml',
-                        inventory: './ansible/hosts',
-                        credentialsId: 'ansible-ssh-key',
-                        colorized: true,
-                        disableHostKeyChecking: true,
-                        extraVars: [
-                            USER: USER,
-                            PASS: PASS,
-                            nexusip: nexusip,
-                            reponame: reponame,
-                            groupid: groupid,
-                            artifactid: artifactid,
-                            build: build,
-                            time: time,
-                            vprofile_version: vprofile_version
-                        ]
-                    ])
-                }
+                 
+                ansiblePlaybook([
+                    playbook: './ansible/vpro-app-setup.yml',
+                    inventory: './ansible/hosts',
+                    credentialsId: 'ansible-ssh-key',
+                    colorized: true,
+                    disableHostKeyChecking: true,
+                    extraVars: [
+                        USER: "${NEXUS_USER}",
+                        PASS: "${NEXUS_PASS}",
+                        nexusip: "${NEXUSIP}",
+                        reponame: "${NEXUS_REPO}",
+                        groupid: "${NEXUS_GROUP_ID}",
+                        artifactid: "${NEXUS_ARTIFACT}",
+                        build: "${env.BUILD_ID}",
+                        time: "${env.BUILD_TIMESTAMP}"
+                    ]
+                ])
             }
         }
     }
-    
 }
+    

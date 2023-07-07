@@ -11,7 +11,7 @@ pipeline {
     environment {
         SNAP_REPO = "vprofile-snapshot"
         NEXUS_USER = "admin"
-        NEXUS_PASS = "sezersezer"
+        NEXUS_PASS = credentials('nexuspassword')
         NEXUS_REPO = "vprofile-release"
         CENTRAL_REPO = "vprofile-maven-central"
         NEXUSIP = "192.168.56.10"
@@ -20,6 +20,8 @@ pipeline {
         NEXUS_LOGIN = 'nexuslogin'
         SONARSERVER = 'sonarserver'
         SONARSCANNER = 'sonarscanner'
+        NEXUS_GROUP_ID = "QA"
+        NEXUS_ARTIFACT = "vproapp"
     }
 
     stages {
@@ -89,13 +91,12 @@ pipeline {
         }
         stage('create test env') {
             steps{
-                ansiColor('xterm') {
-                    ansiblePlaybook(
-                        playbook: './ansible/tomcat_setup.yml',
-                        inventory: './ansible/hosts',
-                        credentialsId: 'ansible-ssh-key',
-                        colorized: true)
-                }
+                
+                ansiblePlaybook(
+                    playbook: './ansible/tomcat_setup.yml',
+                    inventory: './ansible/hosts',
+                    credentialsId: 'ansible-ssh-key',
+                    colorized: true)  
             }
         }
         stage('create test env') {
@@ -106,6 +107,28 @@ pipeline {
                         credentialsId: 'ansible-ssh-key',
                         colorized: true,
                         disableHostKeyChecking: true])
+            }
+        }
+        stage('create test env') {
+            steps {
+                 
+                ansiblePlaybook([
+                    playbook: './ansible/vpro-app-setup.yml',
+                    inventory: './ansible/hosts',
+                    credentialsId: 'ansible-ssh-key',
+                    colorized: true,
+                    disableHostKeyChecking: true,
+                    extraVars: [
+                        USER: "${NEXUS_USER}",
+                        PASS: "${NEXUS_PASS}",
+                        nexusip: "${NEXUSIP}",
+                        reponame: "${NEXUS_REPO}",
+                        groupid: "${NEXUS_GROUP_ID}",
+                        artifactid: "${NEXUS_ARTIFACT}",
+                        build: "${env.BUILD_ID}",
+                        time: "${env.BUILD_TIMESTAMP}"
+                    ]
+                ])
             }
         }
         
