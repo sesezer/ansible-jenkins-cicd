@@ -98,6 +98,17 @@ pipeline {
                 }
             }
         }
+        stage('create test env') {
+            steps{
+                ansiblePlaybook([
+                        playbook: './ansible/tomcat_setup.yml',
+                        inventory: './ansible/hosts',
+                        credentialsId: 'ansible-ssh-key',
+                        colorized: true,
+                        disableHostKeyChecking: true])
+            }
+        }
+        
     }
     post {
         always {
