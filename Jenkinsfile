@@ -5,7 +5,7 @@ def COLOR_MAP = [
 pipeline {
     agent any
     parameters {
-        string(name: 'TIME', defaultValue: ''),
+        string(name: 'TIME', defaultValue: '')
         string(name: 'BUILD', defaultValue: '')
 
     }
